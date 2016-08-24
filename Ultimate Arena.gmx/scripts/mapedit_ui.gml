@@ -162,7 +162,11 @@ with(objUIButton){
         else if(bID == 10){//Save Map
             with(objUIField){
                 if(content == "")
+                {
+                    ui_show_popup("Please enter a name.");
                     exit;
+                    
+                }
                 else
                     global.charname = content;
             }
@@ -232,7 +236,7 @@ with(objUIButton){
                     if(file_exists(working_directory+"maps\"+name+'\'+name+'overlay.png'))
                         steam_ugc_set_item_preview(updateHandle, working_directory+"maps\"+name+'\'+name+'overlay.png');
                     else
-                        steam_ugc_set_item_preview(updateHandle, working_directory + "maps\" + workshopName + "\" + maps + ".png");
+                        steam_ugc_set_item_preview(updateHandle, working_directory + "maps\" + workshopName + "\" + name + ".png");
                         
                     steam_ugc_set_item_content(updateHandle, working_directory + "maps\" + workshopName + "\");
                     

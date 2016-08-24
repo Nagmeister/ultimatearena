@@ -117,7 +117,7 @@ with(objUIButton)
         if(bID == 1)
         {
             //var charname = keyboard_string;
-            file = get_open_filename("Image File|*.png;*.jpg;*.jpeg", "");
+            var file = get_open_filename("Image File|*.png;*.jpg;*.jpeg", "");
             if(file != "")
             {
                 var newsp = sprite_add(file,0,0,0,0,0);
@@ -132,9 +132,7 @@ with(objUIButton)
                 surface_free(surf);
             }
             else
-            {
                 global.newImage = sFighterImage;
-            }
             
             with(oUIImage)
             {
@@ -152,126 +150,134 @@ with(objUIButton)
                 if(fID == 0)
                     var charname = content;
             
-            global.charname = charname;
-            ini_open(working_directory + "characters\" + charname + "\" + charname + ".ini");
-            ini_write_string("character","name",charname);
-            ini_write_string("character","image",charname+".png");
-            
-            ini_write_real("character","colorr",global.editColors[global.editColor,0]);
-            ini_write_real("character","colorg",global.editColors[global.editColor,1]);
-            ini_write_real("character","colorb",global.editColors[global.editColor,2]);
-            
-            global.charVersion++;
-            ini_write_real("character","version",global.charVersion);
-            
-            global.workshopID = ini_read_real("character","workshopID",-1);
-            
-            newGender = 0;
-            with(objUICheckbox)
+                    
+            if(charname != "")
             {
-                if(bID == 0)
-                    if(value == 1)
-                        other.newGender = cID;
-            }
-            ini_write_real("character","gender",newGender)
-            
-            ini_write_real("character","strength",global.editStats[0]);
-            ini_write_real("character","agility",global.editStats[1]);
-            ini_write_real("character","endurance",global.editStats[2]);
-            ini_write_real("character","skill",global.editStats[3]);
-            ini_write_real("character","luck",global.editStats[4]);
-            
-            if(global.creator == -1)
-            {
-                ini_write_real("character","creator",steam_get_user_account_id());
-                global.creator = steam_get_user_account_id();
-            }
-            
-            with(objUIField)
-            {
-                if(fID == 1)
+                global.charname = charname;
+                ini_open(working_directory + "characters\" + charname + "\" + charname + ".ini");
+                ini_write_string("character","name",charname);
+                ini_write_string("character","image",charname+".png");
+                
+                ini_write_real("character","colorr",global.editColors[global.editColor,0]);
+                ini_write_real("character","colorg",global.editColors[global.editColor,1]);
+                ini_write_real("character","colorb",global.editColors[global.editColor,2]);
+                
+                global.charVersion++;
+                ini_write_real("character","version",global.charVersion);
+                
+                global.workshopID = ini_read_real("character","workshopID",-1);
+                
+                newGender = 0;
+                with(objUICheckbox)
                 {
-                    if(content != "")
-                    {
-                        ini_write_string("think","s1",content);
-                        ini_write_real("think","total",1);
-                    }
+                    if(bID == 0)
+                        if(value == 1)
+                            other.newGender = cID;
                 }
-            }
-            var tagstring = "";
-            with(oUIListBox){
-                if(listID == 1){
-                    for(var i=0; i<global.TAG_COUNT; i++){
-                        if(selected[i] == 0){
-                            if(tagstring == "")
-                                tagstring+= global.TAGS[i];
-                            else
-                                tagstring+= ","+global.TAGS[i];
+                ini_write_real("character","gender",newGender)
+                
+                ini_write_real("character","strength",global.editStats[0]);
+                ini_write_real("character","agility",global.editStats[1]);
+                ini_write_real("character","endurance",global.editStats[2]);
+                ini_write_real("character","skill",global.editStats[3]);
+                ini_write_real("character","luck",global.editStats[4]);
+                
+                if(global.creator == -1)
+                {
+                    ini_write_real("character","creator",steam_get_user_account_id());
+                    global.creator = steam_get_user_account_id();
+                }
+                
+                with(objUIField)
+                {
+                    if(fID == 1)
+                    {
+                        if(content != "")
+                        {
+                            ini_write_string("think","s1",content);
+                            ini_write_real("think","total",1);
                         }
-                        selected[i]=1;
                     }
                 }
-            }
-            ini_write_string("character","tags",tagstring);
-            ini_close();
-            
-            for(i=0;i<5;i++)
-                global.editStats[i] = 5;
-                
-            with(objUILabel)
-                if(lID > 0)
-                    caption = "5";
-                
-            if(global.newImage != sFighterImage)
-            {
-                sprite_save(global.newImage,0,working_directory + "characters\" + charname + "\" + charname + ".png");
-            }
-            else
-            {
-                //Gamemaker doesn't let you save images from the resource tree.
-                tempSprite = sprite_duplicate(sFighterImage);
-                sprite_save(tempSprite,0,working_directory + "characters\" + charname + "\" + charname + ".png");
-                sprite_delete(tempSprite);
-            }
-            
-            if(global.workshop && !global.copyProtection)
-            {
-                if(global.workshopID == -1)
-                {
-                    with(oSetup)
-                    {
-                        var app_id = steam_get_app_id(); 
-                        new_item = steam_ugc_create_item(app_id, ugc_filetype_community);
-                        
-                        workshopName = charname;
-                        workshopType = 0;
+                var tagstring = "";
+                with(oUIListBox){
+                    if(listID == 1){
+                        for(var i=0; i<global.TAG_COUNT; i++){
+                            if(selected[i] == 0){
+                                if(tagstring == "")
+                                    tagstring+= global.TAGS[i];
+                                else
+                                    tagstring+= ","+global.TAGS[i];
+                            }
+                            selected[i]=1;
+                        }
                     }
+                }
+                ini_write_string("character","tags",tagstring);
+                ini_close();
+                
+                for(i=0;i<5;i++)
+                    global.editStats[i] = 5;
+                    
+                with(objUILabel)
+                    if(lID > 0)
+                        caption = "5";
+                    
+                if(global.newImage != sFighterImage)
+                {
+                    sprite_save(global.newImage,0,working_directory + "characters\" + charname + "\" + charname + ".png");
                 }
                 else
                 {
-                    var workshopName = charname;
-                    
-                    var app_id = steam_get_app_id();
-                    updateHandle = steam_ugc_start_item_update(app_id, global.workshopID);
-                    
-                    steam_ugc_set_item_title(updateHandle, workshopName );
-                    steam_ugc_set_item_description( updateHandle, "Adds " + workshopName + " character to Ultimate Arena");
-                    steam_ugc_set_item_visibility(updateHandle, ugc_visibility_public);
-                    
-                    var tagArray;
-                    tagArray[0] = "Character";
-                    
-                    steam_ugc_set_item_tags(updateHandle, tagArray);
-                    steam_ugc_set_item_preview(updateHandle, working_directory + "characters\" + workshopName + "\" + workshopName + ".png");
-                    steam_ugc_set_item_content(updateHandle, working_directory + "characters\" + workshopName + "\");
-                    
-                    requestId = steam_ugc_submit_item_update(updateHandle, "Version " + string(global.charVersion));
+                    //Gamemaker doesn't let you save images from the resource tree.
+                    tempSprite = sprite_duplicate(sFighterImage);
+                    sprite_save(tempSprite,0,working_directory + "characters\" + charname + "\" + charname + ".png");
+                    sprite_delete(tempSprite);
                 }
+                
+                if(global.workshop && !global.copyProtection)
+                {
+                    if(global.workshopID == -1)
+                    {
+                        with(oSetup)
+                        {
+                            var app_id = steam_get_app_id(); 
+                            new_item = steam_ugc_create_item(app_id, ugc_filetype_community);
+                            
+                            workshopName = charname;
+                            workshopType = 0;
+                        }
+                    }
+                    else
+                    {
+                        var workshopName = charname;
+                        
+                        var app_id = steam_get_app_id();
+                        updateHandle = steam_ugc_start_item_update(app_id, global.workshopID);
+                        
+                        steam_ugc_set_item_title(updateHandle, workshopName );
+                        steam_ugc_set_item_description( updateHandle, "Adds " + workshopName + " character to Ultimate Arena");
+                        steam_ugc_set_item_visibility(updateHandle, ugc_visibility_public);
+                        
+                        var tagArray;
+                        tagArray[0] = "Character";
+                        
+                        steam_ugc_set_item_tags(updateHandle, tagArray);
+                        steam_ugc_set_item_preview(updateHandle, working_directory + "characters\" + workshopName + "\" + workshopName + ".png");
+                        steam_ugc_set_item_content(updateHandle, working_directory + "characters\" + workshopName + "\");
+                        
+                        requestId = steam_ugc_submit_item_update(updateHandle, "Version " + string(global.charVersion));
+                    }
+                }
+                
+                initialize_characters();
+                room_restart();
+                keyboard_string = "";
             }
-            
-            initialize_characters();
-            room_restart();
-            keyboard_string = "";
+            else
+            {
+                ui_show_popup("Please enter a name.");
+            }
         }
         if(bID == 4)
         {
@@ -356,7 +362,7 @@ with(oUIImage)
     if(argument0 == id)
     {
         if(global.IDselected >= 0)
-            image = global.cIMAGES[global.IDselected];
+            image = global.newImage;
     }
 }
 
